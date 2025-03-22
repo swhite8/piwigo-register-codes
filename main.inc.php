@@ -67,10 +67,11 @@ function log_user_registration($user_data)
 {
     global $prefixeTable;
     $username = $user_data['username'];
+    $user_id = $user_data['id'];
     $register_code = $_SESSION['user_register_code'];
     $update_used = 'update ' . $prefixeTable . "register_codes set used = used + 1 where code='$register_code'";
     pwg_query($update_used);
-    $insert_user = 'insert into ' . $prefixeTable . "register_codes_users (code,user_name) values ('$register_code','$username')";
+    $insert_user = 'insert into ' . $prefixeTable . "register_codes_users (code, user_name, user_id) values ('$register_code', '$username', $user_id)";
     pwg_query($insert_user);
 }
 ?>
