@@ -129,10 +129,30 @@ background-color: var(--row-even-bg);
     applyThemeStyles();
   });
 
+// Generate a random registration code for the admin UI.
+// The code is shown in an unnamed display field and copied into a hidden field
+// to minimise the chance that browsers save or autofill it as a credential.
+
   function generateCode() {
-    var code = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    $('#register_code').val(code);
+    var code = Math.random().toString(36).substring(2, 15)
+             + Math.random().toString(36).substring(2, 15);
+    // Visible-only field (for viewing/copying)
+    document.getElementById('register_code_display').value = code;
+    // Hidden field used for form submission
+    document.getElementById('register_code_real').value = code;
   }
+
+// On submit, ensure manually typed codes are also copied into the hidden field.
+    document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('#new-code form');
+    if (!form) return;
+
+    form.addEventListener('submit', function () {
+      var v = document.getElementById('register_code_display').value || '';
+      document.getElementById('register_code_real').value = v;
+    });
+  });
+
 
   function copyCode(code) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -232,8 +252,25 @@ background-color: var(--row-even-bg);
         <tr>
           <!-- <td><p><textarea style="border: none;" class="span2" name="register_code" placeholder="Example Code" id="register_code"></textarea></p></td> -->
           <td><button type="button" class="btn btn-bg" onclick="generateCode()">{'Generate Code'|@translate}</button>
-            <p><input type="textarea" class="span2" name="register_code" placeholder="{'Example Code'|@translate}"
-                id="register_code"></p>
+
+{* Fix the fatal error in V16 issue by replacing the default value with ""
+  On testing, a security issue found when browser shared secrets.
+  To improve security avoid browsers treating registration codes as reusable credentials.
+  The visible input has no name and is used only for display/copy.
+  The actual code is stored in a hidden field and submitted once, to reduce the risk
+  that password managers save/sync it across devices.
+*} 
+  
+          <!-- Visible field: for admin convenience only, not submitted -->
+	  <p><input type="text"
+          class="span2"
+          id="register_code_display"
+          placeholder="{'Example Code'|@translate}"
+          value=""
+          autocomplete="off">
+          </p>
+          <!-- Hidden field: this is what gets POSTed as the registration code -->
+		  <input type="hidden" name="register_code" id="register_code_real" value="">
           </td>
           <td>
             <p><textarea class="span2" name="register_comment" placeholder="{'Optional Comment'|@translate}"
@@ -247,8 +284,7 @@ background-color: var(--row-even-bg);
             </p>
           </td>
           <td>
-            <p><input type="text" class="span2" name="register_expiry"
-                value="{date("Y-m-d H:i:00", strtotime("+1 week", strtotime("now")))}" id="register_expiry"></p>
+		  	<p><input type="text" class="span2" name="register_expiry" value="" id="register_expiry"></p>
           </td>
           <td><button type="submit" class="btn btn-bg">{'Add'|@translate}</button></td>
         </tr>
@@ -280,8 +316,7 @@ background-color: var(--row-even-bg);
                    min="0"></center>
           </td>
           <td>
-            <input type="text" class="span2" name="batch_expiry" 
-                   value="{date("Y-m-d H:i:00", strtotime("+1 week", strtotime("now")))}" id="batch_expiry">
+            <input type="text" class="span2" name="batch_expiry" value="" id="batch_expiry">
           </td>
           <td>
             <button type="submit" class="btn btn-bg">{'Generate'|@translate}</button>
