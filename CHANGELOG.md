@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 — 2026-11-02
+
+- Match the registration-code field to the theme's other form controls using the existing label, spacing and input-width classes.
+- Keep the registration-code label and required-field asterisk on one line.
+- Verified visually in Bootstrap Darkroom; registration/template/translation regression checks pass. No schema or registration-logic changes.
+
 ## 1.5.1 — 2026-11-02
 
 ### Security and correctness
