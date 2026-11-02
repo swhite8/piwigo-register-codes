@@ -5,21 +5,67 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 //Check If Administrator
 check_status(ACCESS_ADMINISTRATOR);
 
-// Fetch the template.
-global $template, $prefixeTable;
-include_once(PHPWG_ROOT_PATH . 'admin/include/tabsheet.class.php');
-get_register_codes();
-$template->assign('registration_history',get_registration_history());
+// Every administrative mutation requires a POST-bound session token.
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (!isset($_POST['pwg_token']) || !is_string($_POST['pwg_token'])
+      || !hash_equals(get_pwg_token(), $_POST['pwg_token'])) {
+    access_denied();
+    exit;
+  }
+  check_pwg_token();
 
-// Add our template to the global template
-$template->set_filenames(
- array(
-    'plugin_admin_content' => dirname(__FILE__) . '/admin.tpl',
- )
-);
-
-// Assign the template contents to ADMIN_CONTENT
-$template->assign_var_from_handle('ADMIN_CONTENT', 'plugin_admin_content');
+  foreach (array('register_code', 'register_comment', 'register_expiry',
+                 'batch_comment', 'batch_expiry', 'code') as $field) {
+    if (isset($_POST[$field]) && !is_string($_POST[$field])) {
+      bad_request(l10n('Invalid registration code field'));
+      exit;
+    }
+  }
+  foreach (array('uses', 'batch_uses', 'batch_count', 'id') as $field) {
+    if (isset($_POST[$field])) {
+      $minimum = in_array($field, array('batch_count', 'id')) ? 1 : 0;
+      $maximum = $field === 'batch_count' ? 100 : 2147483647;
+      if (!is_string($_POST[$field]) || !preg_match('/^[0-9]+$/D', $_POST[$field])
+          || filter_var($_POST[$field], FILTER_VALIDATE_INT,
+               array('options' => array('min_range' => $minimum, 'max_range' => $maximum))) === false) {
+        bad_request(l10n('Invalid registration code count or identifier'));
+        exit;
+      }
+    }
+  }
+  foreach (array('register_expiry', 'batch_expiry') as $field) {
+    if (!empty($_POST[$field])) {
+      $date = DateTime::createFromFormat('!Y-m-d H:i:s', $_POST[$field]);
+      if (!$date || $date->format('Y-m-d H:i:s') !== $_POST[$field]) {
+        bad_request(l10n('Invalid registration code expiry; use YYYY-MM-DD HH:MM:SS'));
+        exit;
+      }
+    }
+  }
+  if (isset($_POST['register_code'])) {
+    foreach (array('register_comment', 'uses', 'register_expiry') as $field) {
+      if (!isset($_POST[$field])) { bad_request(l10n('Missing registration code field')); exit; }
+    }
+    if (strlen(stripslashes($_POST['register_code'])) > 255
+        || strlen(stripslashes($_POST['register_comment'])) > 255) {
+      bad_request(l10n('Registration code and comment must be at most 255 bytes'));
+      exit;
+    }
+  }
+  if (isset($_POST['batch_comment']) && strlen(stripslashes($_POST['batch_comment'])) > 255) {
+    bad_request(l10n('Registration comment must be at most 255 bytes'));
+    exit;
+  }
+  // Decode Piwigo's input escaping once, then escape for this DB connection.
+  foreach (array('register_code', 'register_comment', 'batch_comment', 'code') as $field) {
+    if (isset($_POST[$field])) {
+      $_POST[$field] = pwg_db_real_escape_string(stripslashes($_POST[$field]));
+    }
+  }
+}
+$template->assign('REGISTER_CODES_DIRECTION', in_array(substr($user['language'] ?? '', 0, 2), array('ar', 'ur')) ? 'rtl' : 'ltr');
+$template->assign('REGISTER_CODES_TOKEN', get_pwg_token());
+$template->assign('REGISTER_CODES_ASSET_PATH', 'plugins/'.basename(__DIR__).'/');
 
 if (isset($_POST["register_code"])) {
 
@@ -32,10 +78,10 @@ if (isset($_POST["register_code"])) {
   $code_count = pwg_db_num_rows(pwg_query($check_query));
 
   if ($code_count >= 1) {
-    echo "<font color='red'>Duplicate Code Entry Not Allowed.</font>";
+    echo '<p class="errors">'.htmlspecialchars(l10n('Duplicate Code Entry Not Allowed.'), ENT_QUOTES, 'UTF-8').'</p>';
   }else{
     if($register_code == "") {
-        echo "<font color='red'>Registration Code Required.</font>";
+        echo '<p class="errors">'.htmlspecialchars(l10n('Registration Code Required.'), ENT_QUOTES, 'UTF-8').'</p>';
     }else{
       if($register_expiry == "") {
         $query = 'insert into ' . $prefixeTable . "register_codes (code,comment,uses,expiry) values ('$register_code','$register_comment','$uses',NULL)";
@@ -43,7 +89,7 @@ if (isset($_POST["register_code"])) {
         $query = 'insert into ' . $prefixeTable . "register_codes (code,comment,uses,expiry) values ('$register_code','$register_comment','$uses','$register_expiry')";
       }
       pwg_query($query);
-      $self_url = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+      $self_url = get_admin_plugin_menu_link(dirname(__FILE__)).'/admin.php';
       redirect($self_url);
     }
   }
@@ -52,11 +98,11 @@ if (isset($_POST["register_code"])) {
 if (isset($_POST["id"],$_POST["code"])) {
   $query = 'delete from ' . $prefixeTable . 'register_codes where id="' . $_POST["id"] . '" and code="' . $_POST["code"] . '"';
   pwg_query($query);
-  $self_url = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+  $self_url = get_admin_plugin_menu_link(dirname(__FILE__)).'/admin.php';
   redirect($self_url);
 }
 
-function get_register_codes() {
+function register_codes_get_codes() {
   global $template, $prefixeTable;
   
   $query = 'SELECT * FROM ' . $prefixeTable . 'register_codes ORDER BY id DESC';
@@ -115,7 +161,7 @@ if (isset($_POST["batch_count"])) {
     
     while (!$unique) {
       // Generate random code (combination of two random strings for better uniqueness)
-      $code = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', 5)), 0, 22);
+      $code = bin2hex(random_bytes(16));
       
       // Check if code already exists
       $check_query = 'SELECT COUNT(*) FROM ' . $prefixeTable . "register_codes WHERE code='$code'";
@@ -144,12 +190,33 @@ if (isset($_POST["batch_count"])) {
   $_SESSION['generated_batch_codes'] = $generated_codes;
   $_SESSION['batch_success_count'] = $success_count;
   
-  $self_url = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+  $self_url = get_admin_plugin_menu_link(dirname(__FILE__)).'/admin.php';
   redirect($self_url);
 }
 
+// Fetch the template.
+global $template, $prefixeTable;
+include_once(PHPWG_ROOT_PATH . 'admin/include/tabsheet.class.php');
+register_codes_get_codes();
+$template->assign('registration_history',register_codes_get_registration_history());
+
+//Default Expiry Settings
+$template->assign('register_expiry', date("Y-m-d H:i:00", strtotime("+1 week", strtotime("now"))));
+$template->assign('batch_expiry', date("Y-m-d H:i:00", strtotime("+1 week", strtotime("now"))));
+
+// Add our template to the global template
+$template->set_filenames(
+ array(
+    'plugin_admin_content' => dirname(__FILE__) . '/admin.tpl',
+ )
+);
+
+// Assign the template contents to ADMIN_CONTENT
+$template->assign_var_from_handle('ADMIN_CONTENT', 'plugin_admin_content');
+
+
 // Get users who used the codes
-function get_registration_history()
+function register_codes_get_registration_history()
 {
   global $prefixeTable;
   

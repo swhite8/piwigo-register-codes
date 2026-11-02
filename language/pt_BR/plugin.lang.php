@@ -1,10 +1,10 @@
 <?php
+// Register Codes plugin translations (UTF-8).
 $lang['Register Codes Plugin'] = 'Plugin de Registro de Códigos.';
 $lang['Registration Code'] = 'Código de Registro';
 $lang['Add New Code'] = 'Adicionar Novo Código';
-$lang['Add'] = 'Adicionar';
 $lang['Registration Code Required'] = 'Código de Registro Obrigatório';
-$lang['Register Codes Description'] = 'Um plugin para Piwigo que requer que os usuários tenham um código para registro. Os códigos podem ser definidos para expirar ou para um número definido de usos.';
+$lang['Register Codes Description'] = 'É necessário um código de registro para criar uma conta no Piwigo. Os códigos podem ter uma data de validade ou um limite de usos.';
 $lang['Code'] = 'Código';
 $lang['Comment'] = 'Comentário';
 $lang['Number Of Uses'] = 'Número de Usos';
@@ -27,9 +27,8 @@ $lang['No codes found with the matching comment'] = 'Nenhum código encontrado c
 $lang['Failed to copy codes to clipboard'] = 'Falha ao copiar códigos para o clipboard';
 $lang['Failed to copy codes'] = 'Falha ao copiar códigos';
 $lang['Generate Code'] = 'Gerar Código';
-$lang['Generate'] = 'Gerar';
 $lang['Example Code'] = 'Exemplo de Código';
-$lang['Optional Comment'] = 'Comentário Opicional';
+$lang['Optional Comment'] = 'Comentário opcional';
 $lang['Code copied to clipboard'] = 'Código copiado para a área de transferência';
 $lang['Failed to copy code'] = 'Falha ao copiar o código';
 $lang['Copied'] = 'Copiado';
@@ -38,5 +37,17 @@ $lang['Active Codes'] = 'Códigos Ativos';
 $lang['Expired Codes'] = 'Códigos Expirados';
 $lang['Registration History'] = 'Histórico de Registro';
 $lang['Registered At'] = 'Registrado em';
+$lang['Add'] = 'Adicionar';
 $lang['Comment to query for copy'] = 'Comentário para buscar códigos';
-?>
+$lang['Username'] = 'Nome de usuário';
+$lang['No registration history found'] = 'Nenhum registro encontrado no histórico';
+$lang['Invalid Registration Code'] = 'Código de registro inválido';
+$lang['Invalid registration code field'] = 'Campo do código de registro inválido';
+$lang['Invalid registration code count or identifier'] = 'Número de usos ou identificador inválido';
+$lang['Invalid registration code expiry; use YYYY-MM-DD HH:MM:SS'] = 'Data de validade inválida; use YYYY-MM-DD HH:MM:SS';
+$lang['Missing registration code field'] = 'Falta um campo do código de registro';
+$lang['Registration code and comment must be at most 255 bytes'] = 'O código e o comentário devem ter no máximo 255 bytes cada';
+$lang['Registration comment must be at most 255 bytes'] = 'O comentário deve ter no máximo 255 bytes';
+$lang['Duplicate Code Entry Not Allowed.'] = 'Não é permitido adicionar códigos duplicados.';
+$lang['Registration Code Required.'] = 'O código de registro é obrigatório.';
+$lang['Codes copied to clipboard: %d'] = 'Códigos copiados para a área de transferência: %d';
