@@ -2,6 +2,10 @@
 
 Requires a registration code when signing up through Piwigo's registration page. Codes support expiry dates, usage limits (0 means unlimited), batch generation, copying, and registration history.
 
+## 1.5.2 formatting update
+
+Match the registration-code input to the surrounding theme controls and keep its required-field asterisk on the label's line. No schema or registration-logic changes.
+
 ## 1.5.1 security release
 
 - Require session-bound CSRF tokens for administrative submissions.
@@ -26,7 +30,7 @@ Existing code values are retained; no schema migration is required. Authenticate
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes. CI runs isolated checks on PHP 8.3, 8.4 and 8.5 using the pinned Piwigo 16.4.0 template fixture. CI does not run tests against a real database or establish complete compatibility with those environments.
 
-Create a release archive after approval with `git archive --format=zip --prefix=piwigo-register-codes/ HEAD -o piwigo-register-codes-1.5.1.zip`. Tests and CI files are excluded through `.gitattributes`.
+Create a release archive after approval with `git archive --format=zip --prefix=piwigo-register-codes/ HEAD -o piwigo-register-codes-1.5.2.zip`. Tests and CI files are excluded through `.gitattributes`.
 
 ## Development checks
 

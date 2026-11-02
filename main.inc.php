@@ -1,6 +1,6 @@
 <?php
 /*
-Version: 1.5.1
+Version: 1.5.2
 Plugin Name: Register Codes
 Plugin URI: https://piwigo.org/ext/index.php?eid=997
 Author: swhite-photos
