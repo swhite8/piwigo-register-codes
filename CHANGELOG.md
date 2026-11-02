@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.1 — release candidate
+## 1.5.1 — 2026-11-02
 
 ### Security and correctness
 

@@ -2,7 +2,7 @@
 
 Requires a registration code when signing up through Piwigo's registration page. Codes support expiry dates, usage limits (0 means unlimited), batch generation, copying, and registration history.
 
-## 1.5.1 security release candidate
+## 1.5.1 security release
 
 - Require session-bound CSRF tokens for administrative submissions.
 - Escape stored code, comment, and username output; keep code values out of inline JavaScript.
@@ -20,11 +20,11 @@ Requires a registration code when signing up through Piwigo's registration page.
 - Support theme overrides at `plugins/piwigo-register-codes/register_codes_register.tpl` inside a theme template directory, plus Piwigo set_extent overrides for the `register_codes_register` handle.
 - Keep schema initialization idempotent across install, activation and update.
 
-Existing code values are retained; no schema migration is required. This remains a release candidate pending final review. Authenticated admin form tests and live concurrent registration tests have passed on the local installation. Local automated checks use PHP 8.5 and Piwigo 16.4's Smarty library; broader compatibility has not been established.
+Existing code values are retained; no schema migration is required. Authenticated admin form tests and live concurrent registration tests have passed on the local installation. Local automated checks use PHP 8.5 and Piwigo 16.4's Smarty library; broader compatibility has not been established.
 
 ## Release review
 
-See [CHANGELOG.md](CHANGELOG.md) for release-candidate notes. CI runs isolated checks on PHP 8.3, 8.4 and 8.5 using the pinned Piwigo 16.4.0 template fixture. CI does not run tests against a real database or establish complete compatibility with those environments.
+See [CHANGELOG.md](CHANGELOG.md) for release notes. CI runs isolated checks on PHP 8.3, 8.4 and 8.5 using the pinned Piwigo 16.4.0 template fixture. CI does not run tests against a real database or establish complete compatibility with those environments.
 
 Create a release archive after approval with `git archive --format=zip --prefix=piwigo-register-codes/ HEAD -o piwigo-register-codes-1.5.1.zip`. Tests and CI files are excluded through `.gitattributes`.
 
