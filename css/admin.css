@@ -1,74 +1,71 @@
-#code_table input, #code_table textarea {
+/* Keep plugin controls inside the available Piwigo admin content width. */
+#register-codes-admin,
+#register-codes-admin fieldset,
+#register-codes-admin form,
+#register-codes-admin .details {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#register-codes-admin fieldset { margin: 0; }
+#register-codes-admin .rc-description { overflow-wrap: anywhere; }
+#register-codes-admin table { border-collapse: collapse; margin: 5px auto; }
+#register-codes-admin th, #register-codes-admin td { padding: 10px; }
+#register-codes-admin summary { cursor: pointer; }
+#register-codes-admin .details { width: auto; margin: 10px 0; padding: 10px; }
+#register-codes-admin .rc-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+#register-codes-admin .rc-table-scroll:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+#register-codes-admin .rc-form-table { width: 100%; }
+#register-codes-admin input, #register-codes-admin textarea { box-sizing: border-box; max-width: 100%; }
+#register-codes-admin #new-code input, #register-codes-admin #batch-code input,
+#register-codes-admin #new-code textarea, #register-codes-admin #batch-code textarea {
+  padding: 5px;
+  border-radius: 5px;
+}
+#register-codes-admin #code_table input, #register-codes-admin #code_table textarea {
   border: 0 !important;
   color: var(--text-color);
-  }
-  summary {
-  cursor: pointer;
-  }
-  table {
-  border-collapse: collapse;
-  margin: 5px auto;
-  }
-  
-  /* Table header styling */
-  th, td {
-  padding: 10px;
-  }
-  
-  /* Zebra striping for rows */
-  /* tbody tr:nth-child(odd) {
-  background-color: var(--row-odd-bg);
-  } */
-  
-  /* Hover effect for rows */
-  
-  #code_table INPUT {
   background-color: transparent !important;
-  text-align: center;
-  }
-  #code_table textarea {
-  background-color: transparent !important;
-  }
-  .btn {
+}
+#register-codes-admin #code_table input { text-align: center; }
+#register-codes-admin .btn {
   font-weight: normal;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+}
+#register-codes-admin .btn-copy { margin-inline-end: 10px; }
+#register-codes-admin .btn-red { color: white; background-color: #f44336; }
+#register-codes-admin .column-short { width: 50px; }
+#register-codes-admin .column-medium { width: 150px; }
+#register-codes-admin .table-margin { margin-top: 10px; margin-bottom: 10px; }
+
+#register-codes-admin .rc-stacked-hint { display: none; }
+
+/* Stack entry forms, but retain horizontal scrolling for wide data tables. */
+@media (max-width: 1200px) {
+  #register-codes-admin .rc-form-table,
+  #register-codes-admin .rc-form-table tbody,
+  #register-codes-admin .rc-form-table tr,
+  #register-codes-admin .rc-form-table td { display: block; width: 100%; box-sizing: border-box; }
+  #register-codes-admin .rc-form-table .rc-column-headings { display: none; }
+  #register-codes-admin .rc-form-table th[colspan] { display: block; }
+  #register-codes-admin .rc-form-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
   }
-  
-  .btn-copy {
-  margin-right: 10px;
-  }
-  .btn-red {
-  color: white;
-  background-color: #f44336;
-  }
-  #new-code INPUT, #batch-code INPUT {
-  padding: 5px;
-  border-radius: 5px;
-  }
-  #new-code textarea, #batch-code textarea {
-  padding: 5px;
-  border-radius: 5px;
-  }
-  #expired_codes {
-  margin-top: 20px;
-  margin-bottom: 200px;
-  }
-  .table-margin {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  }
-  .details {
-  width: min-content;
-  margin: 10px auto;
-  padding: 10px;
-  }
-  .column-short {
-  width: 50px;
-  }
-  .column-medium {
-  width: 120px;
-  }
-  
+  #register-codes-admin .rc-form-table input:not([type=hidden]),
+  #register-codes-admin .rc-form-table textarea { width: 100%; min-width: 0; }
+  #register-codes-admin .rc-form-table p { margin: 6px 0; }
+  #register-codes-admin .rc-stacked-hint { display: block; margin-top: 4px; }
+  #register-codes-admin .rc-form-action { text-align: end; }
+  #register-codes-admin #batch-code > .details > div table { width: 100%; }
+  #register-codes-admin #batch-code > .details > div td { overflow-wrap: anywhere; }
+}

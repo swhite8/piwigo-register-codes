@@ -1,0 +1,44 @@
+name: Plugin checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, xml
+          coverage: none
+      - name: Check out Piwigo template fixture
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: Piwigo/Piwigo
+          ref: 13883c9940da890fc2403aa618cdbbdea018c39e # 16.4.0
+          path: .ci/piwigo
+      - name: Check plugin PHP syntax
+        run: find . -path './.git' -prune -o -path './.ci' -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
+      - name: Run isolated regression tests
+        env:
+          PIWIGO_ROOT: ${{ github.workspace }}/.ci/piwigo
+        run: |
+          python3 tests/admin-test.py
+          php tests/registration-test.php
+          php tests/maintenance-test.php
+          php tests/template-test.php
+          php tests/render-test.php
+          python3 tests/translations-test.py

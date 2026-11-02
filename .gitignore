@@ -1,0 +1,3 @@
+.ci/
+__pycache__/
+*.pyc

@@ -1,9 +1,10 @@
 <?php
-$lang['Register Codes Plugin'] = 'Register Codes Plugin.';
+// Register Codes plugin translations (UTF-8).
+$lang['Register Codes Plugin'] = 'Register Codes';
 $lang['Registration Code'] = 'Registration Code';
 $lang['Add New Code'] = 'Add New Code';
 $lang['Registration Code Required'] = 'Registration Code Required';
-$lang['Register Codes Description'] = 'A plugin for Piwigo that requires users to have a code for registration. Codes can be set to expire or to a defined number of uses.';
+$lang['Register Codes Description'] = 'Require a registration code to create a Piwigo account. Codes can have an expiry date or a limited number of uses.';
 $lang['Code'] = 'Code';
 $lang['Comment'] = 'Comment';
 $lang['Number Of Uses'] = 'Number Of Uses';
@@ -32,9 +33,21 @@ $lang['Code copied to clipboard'] = 'Code copied to clipboard';
 $lang['Failed to copy code'] = 'Failed to copy code';
 $lang['Copied'] = 'Copied';
 $lang['codes to clipboard'] = 'codes to clipboard';
-$lang['Failed to copy codes to clipboard'] = 'Failed to copy codes to clipboard';
 $lang['Active Codes'] = 'Active Codes';
 $lang['Expired Codes'] = 'Expired Codes';
 $lang['Registration History'] = 'Registration History';
 $lang['Registered At'] = 'Registered At';
-?>
+$lang['Add'] = 'Add';
+$lang['Comment to query for copy'] = 'Comment to query for copy';
+$lang['Username'] = 'Username';
+$lang['No registration history found'] = 'No registration history found';
+$lang['Invalid Registration Code'] = 'Invalid Registration Code';
+$lang['Invalid registration code field'] = 'Invalid registration code field';
+$lang['Invalid registration code count or identifier'] = 'Invalid registration code count or identifier';
+$lang['Invalid registration code expiry; use YYYY-MM-DD HH:MM:SS'] = 'Invalid registration code expiry; use YYYY-MM-DD HH:MM:SS';
+$lang['Missing registration code field'] = 'Missing registration code field';
+$lang['Registration code and comment must be at most 255 bytes'] = 'Registration code and comment must be at most 255 bytes';
+$lang['Registration comment must be at most 255 bytes'] = 'Registration comment must be at most 255 bytes';
+$lang['Duplicate Code Entry Not Allowed.'] = 'Duplicate Code Entry Not Allowed.';
+$lang['Registration Code Required.'] = 'Registration Code Required.';
+$lang['Codes copied to clipboard: %d'] = 'Codes copied to clipboard: %d';
